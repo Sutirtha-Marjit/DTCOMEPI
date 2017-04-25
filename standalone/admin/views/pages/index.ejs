@@ -1,0 +1,92 @@
+<html>
+        <head><title>Traversed result of epi folder</title></head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <style>
+        
+        .fallback{
+            position:fixed;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.5);
+            top:0;
+            left:0;
+            z-index:900;
+            padding:40px;
+        }
+        </style>
+        <body>
+        <div class="fallback" id="alert-box" style="display:none;">
+            <div class="container">                
+                <div class="alert alert-success fade in">
+                    <a href="#" class="close" title="close">×</a>
+                    <strong>Warning!</strong><span> This alert box indicates a warning that might need attention.</span>
+                </div>
+
+            </div>
+         </div>
+        <div class="container">
+            <div class="page-header">
+                <h1>Dummy Epi pages <small>to view the pages click on the items</small></h1>
+                <div>
+                    <br/>
+                    <div class="btn-group">
+                        <a data-feed-action="freshPage" class="btn btn-default btn-sm">Prepare a new page</a>
+                        <a data-feed-action="removeUIFolder" class="btn btn-default btn-sm">Delete UI folder</a>
+                        <a data-feed-action="freshFolder" class="btn btn-default btn-sm">Backup & take new UI folder</a>
+                        <a data-feed-action="cleanBackupFolder" class="btn btn-default btn-sm">Clean backup folder</a>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <br/>
+                    <form>
+                        <div class="form-group">
+                            <div class="input-group">
+                            <div class="input-group-addon">Dev branch location</div>
+                            <input type="text" value="C:\ng\r\dev1\Ericssondotcom\Development\Website\" class="form-control" placeholder="Dev branch location" name="dev-branch-location" />
+                            <div class="input-group-addon"><a id="updateLocation" href="#">Update location</a></div>
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+            <br/>
+            </div>
+            <div data-progress="show">
+            <h4 class="text-warning" style="text-align:center;"></h4>
+            <div class="progress"> 
+                <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar"  aria-valuemin="0" aria-valuemax="100"><span class="sr-only">45% Complete</span></div> 
+            </div>
+            </div>
+
+            <div>
+                <div class="list-group">
+                    <% data.forEach(function(item){
+                        if(item.size===0){
+                            item.size="0KB";
+                        }else{
+                            item.size=((item.size/1024)/1024)+"KB";
+                        }
+                        item.globalLink = "/en/"+item.filename;
+                        item.locaalLink = "/se/sv/"+item.filename;
+                        %>
+                        <div class="list-group-item">
+                            <h4 class="list-group-item-heading"><%=item.filename%></h4>
+                            <p class="list-group-item-text">Created on <%=new Date(item.birthtime).toDateString()%>
+                            <%if(item.filename.indexOf('.html')!==-1){%>
+                             <a class="btn btn-default btn-sm" target="_blank" href="<%=item.globalLink%>">Global</a>  <a class="btn btn-default btn-sm" target="_blank" href="<%=item.locaalLink%>">Local</a>    
+                            <%}%>
+                            
+                            </p>
+                            
+                            <div class="clearfix"></div>
+                        </div>
+                    <%}) %>
+                </div>
+            </div>
+
+         </div>
+         
+         <script src="/admin/frontend/utilities/scripts/admin.app.js"></script>   
+        </body>
+</html>
