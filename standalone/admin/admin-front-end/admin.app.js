@@ -10,7 +10,8 @@ var AppEngine = function(){
         "removeUIFolder":"/feed/service/remove-ui-folder/",
         "freshFolder":"/feed/service/fresh-folder/",
         "fetchUIFolder":"/feed/service/fetch-ui-folder",
-        "cleanBackupFolder":"/feed/service/clean-backup-folder/"
+        "cleanBackupFolder":"/feed/service/clean-backup-folder/",
+        "copyFolderFromSource":"/feed/service/copy-folder-from-source/"
     };
 
     setInterval(function(){
@@ -38,13 +39,21 @@ var AppEngine = function(){
     }
 
     $('#alert-box .close').on('click',function(){
+        $('#alert-box').data('action',null);
         $('#alert-box').fadeOut();
-    })
+    });
+
     var Alert = function(alertObj){
         
-        $('#alert-box strong').text(alertObj.h+" : ");
-        $('#alert-box span').text(alertObj.msg);
-
+        var targetWindow = $('#alert-box div.alert').filter('[data-type="'+alertObj.type+'"]');
+        $('#alert-box').data('action',alertObj.promptAction);
+        $('#alert-box div.alert').addClass('hide');
+        targetWindow.removeClass('hide');
+        
+        targetWindow.find('input[type="text"]').attr('placeholder',alertObj.h);
+        targetWindow.find('strong').text(alertObj.h+" : ");
+        targetWindow.find('span').text(alertObj.msg);
+        
         $('#alert-box').fadeIn();
     }
     
@@ -53,7 +62,7 @@ var AppEngine = function(){
         updateBaseLocationButton.click(function(e){
             e.preventDefault();
             window.localStorage.setItem('StandaloneEpiRunner',devBranchLocationInput.val());
-            Alert({h:"Updated",msg:"Location updated"});
+            Alert({h:"Updated",msg:"Location updated",type:"alert"});
         });
 
         if(window.localStorage){
@@ -77,10 +86,29 @@ var AppEngine = function(){
             console.log(feedUrls["freshFolder"]);
             progressStatus = {msg:"You are going to take backup",percentage:10};
             feedAction(feedUrls["freshFolder"],{},function(resultData){
-                progressStatus = {msg:"Backup taken as "+resultData.data.filename,percentage:60};
+                progressStatus = {msg:"Backup taken as "+resultData.data.filename,percentage:40};
                 
+                feedAction(feedUrls["removeUIFolder"],{},function(statusData){
+                    progressStatus = {msg:"Existing UI folder removed",percentage:70};
+
+                    feedAction(feedUrls["copyFolderFromSource"],{path:devBranchLocationInput.val()},function(copyStatusData){
+
+                    });
+
+                });
 
             });
+            break;
+
+        
+            case "freshPage":
+            console.log(feedUrls["freshPage"]);
+            
+            /*
+            progressStatus = {msg:"Request received to copy new page",percentage:1};
+            feedAction(feedUrls["freshPage"],{},function(resultData){
+                console.log(resultData);
+            });*/
             break;
 
             case "cleanBackupFolder":

@@ -35,9 +35,19 @@ app.get('/',function(req,res){
     
 });
 
+app.get('/feed/service/fresh-page/',function(req,res){
+    cpcn.copyContent('http://www.lipsum.com',function(content){
+           
+        if(content.error===null){
+            
+        }
 
+        res.json(content);
+    });
+    
+});
 
-app.get('/feed/service/fresh-folder/',function(eq,res){
+app.get('/feed/service/fresh-folder/',function(req,res){
     uifmgnr.takeBackUp('./epi/','./admin/backup/',function(statusJSON){
         res.json(statusJSON);
     });
@@ -72,6 +82,16 @@ app.get('/feed/service/remove-ui-folder/',function(req,res){
     });
 });
 
+app.get('/feed/service/copy-folder-from-source/',function(req,res){
+
+    CopyDir(req.query.path+'/ui','./epi/ui',function(err){
+
+    });
+    
+    
+    res.json({status:true,data:req.query});
+
+});
 
 
 app.listen(port,function(){
