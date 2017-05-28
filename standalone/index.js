@@ -6,6 +6,7 @@ var CopyContent = require('./admin/utils/copycontent');
 var UIFolderManager = require('./admin/utils/uifoldermanager');
 var EpiPageTraverse = require('./admin/utils/epipagetraversal');
 var RimRaf = require('rimraf');
+var bodyParser = require("body-parser");
 var app = Express();
 var port = 3102;
 var cpcn = new CopyContent();
@@ -14,6 +15,9 @@ var uifmgnr = new UIFolderManager();
 app.use('/en',Express.static(__dirname +'/epi'));
 app.use('/se/sv',Express.static(__dirname +'/epi'));
 app.use('/admin/frontend/utilities/scripts/',Express.static(__dirname +'/admin/admin-front-end'));
+app.use(bodyParser.urlencoded({ extended: false,limit:'70mb' }));
+app.use(bodyParser.json());
+
 
 app.set('view engine', 'ejs');
 app.set('views','admin/views');
@@ -35,15 +39,27 @@ app.get('/',function(req,res){
     
 });
 
-app.get('/feed/service/fresh-page/',function(req,res){
-    cpcn.copyContent('http://www.lipsum.com',function(content){
-           
-        if(content.error===null){
-            
-        }
-
-        res.json(content);
+app.post('/feed/service/create-page/',function(req,res){
+    cpcn.createBeautifiedHTMLPage(req.body,function(data){
+        res.send(data);
     });
+    
+});
+
+app.get('/feed/service/fresh-page/',function(req,res){
+    if(req.query.targetPage!==null){
+            cpcn.copyContent(req.query.targetPage,function(content){
+        
+            if(content.error===null){
+               console.log(Chalk.magenta(Chalk.italic(content.data))); 
+            }
+                
+            
+
+            res.json(content);
+        });
+    } 
+    
     
 });
 

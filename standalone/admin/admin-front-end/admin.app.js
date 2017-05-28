@@ -5,7 +5,10 @@ var AppEngine = function(){
     var devBranchLocationInput = $('input[name="dev-branch-location"]');
     var updateBaseLocationButton = $('#updateLocation');
     var progressBarElement = $('[data-progress]').eq(0);
+    var webURLPromptWindow = $('div.prompt.freshPage');
+    var editorPromptWinodw = $('div.prompt.createPage');
     var feedUrls = {
+        "createPage":"/feed/service/create-page/",
         "freshPage":"/feed/service/fresh-page/",
         "removeUIFolder":"/feed/service/remove-ui-folder/",
         "freshFolder":"/feed/service/fresh-folder/",
@@ -25,10 +28,21 @@ var AppEngine = function(){
         }
     },100);
 
-    var feedAction = function(path,data,callBack){
+    var closeProgressBarSmartly = function(n,callback){
+
+        setTimeout(function(){
+            progressStatus  = {msg:null,percentage:null};
+            callback();
+        },n);
+    };
+
+    var feedAction = function(path,data,callBack,typeGiven){
+    var type = 'GET';
+        if(typeGiven===1){type='post'}
         $.ajax({
             url:path,
             data:data,
+            type:type,
             success:function(callBackData){
                 callBack(callBackData);
             },
@@ -42,6 +56,47 @@ var AppEngine = function(){
         $('#alert-box').data('action',null);
         $('#alert-box').fadeOut();
     });
+
+    $('.prompt .btn[data-action="create"]').on('click',function(e){
+        progressStatus.msg="Creating a page for you";
+        progressStatus.percentage = 40; 
+        e.preventDefault();
+        var obj={};
+        $('form[name="createPage"] *[name]').each(function(n,p){
+                obj[$(p).attr('name')] = $(p).val();
+                if($(p).attr('type')==="checkbox"){
+                    if(!$(p).prop('checked')){
+                        obj[$(p).attr('name')] = 0;
+                    }
+                     
+                }            
+        }); 
+        
+        
+        feedAction(feedUrls["createPage"],obj,function(data){
+            if(data.status){
+                progressStatus = {msg:'Your file has been created with filename '+data.filename,percentage:100};
+            }else{
+                progressStatus = {msg:'Error ',percentage:100};
+            }
+            closeProgressBarSmartly(1000,function(){
+                window.location.reload();
+            });
+        },1);
+       
+    });
+
+    $('.prompt .btn[data-action="done"]').on('click',function(e){
+        e.preventDefault();
+        var val = $('#WebURL').val();
+        if(val.length===0){
+           Alert({type:'alert',h:'Blank not allowed',msg:'Please dont leave the field blank'}); 
+        }else{
+            feedAction(feedUrls["freshPage"],{targetPage:val},function(data){
+                console.log(data);
+            });
+        }
+    })
 
     var Alert = function(alertObj){
         
@@ -100,10 +155,26 @@ var AppEngine = function(){
             });
             break;
 
+            case "createPage":
+            $('[data-feed-action]').removeClass('active');
+            $('[data-feed-action="createPage"]').addClass('active');
+            $('div.prompt').addClass('hide');
+            editorPromptWinodw.removeClass('hide');
+            break;
         
             case "freshPage":
-            console.log(feedUrls["freshPage"]);
-            
+            $('[data-feed-action]').removeClass('active');
+            $('[data-feed-action="freshPage"]').addClass('active');
+            $('div.prompt').addClass('hide');
+            webURLPromptWindow.removeClass('hide');
+            /*
+            if(!$('[data-feed-action="freshPage"]').hasClass('active')){
+                $('[data-feed-action="freshPage"]').addClass('active');
+                webURLPromptWindow.removeClass('hide');            
+            }else{
+                $('[data-feed-action="freshPage"]').removeClass('active');
+                 webURLPromptWindow.addClass('hide');
+            }*/
             /*
             progressStatus = {msg:"Request received to copy new page",percentage:1};
             feedAction(feedUrls["freshPage"],{},function(resultData){

@@ -41,25 +41,60 @@
             <div class="page-header">
                 <h1>Dummy Epi pages <small>to view the pages click on the items</small></h1>
                 <div>
+                                <div data-progress="show">
+                                <br/>
+                                <hr/>
+                                <h4 class="text-warning" style="text-align:center;"></h4>
+                                 <div class="progress"> 
+                                    <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar"  aria-valuemin="0" aria-valuemax="100"><span class="sr-only">45% Complete</span></div> 
+                                </div>
+                                 </div>
                     <br/>
                     <div class="btn-group">
-                        <a data-feed-action="freshPage" class="btn btn-default btn-sm">Prepare a new page</a>
+                        <a data-feed-action="createPage" class="btn btn-default btn-sm">Create a new page</a>
+                        <a data-feed-action="freshPage" class="btn btn-default btn-sm">Extract a page</a>
                         <a data-feed-action="removeUIFolder" class="btn btn-default btn-sm">Delete UI folder</a>
                         <a data-feed-action="freshFolder" class="btn btn-default btn-sm">Backup & take new UI folder</a>
                         <a data-feed-action="cleanBackupFolder" class="btn btn-default btn-sm">Clean backup folder</a>
                     </div>
                     <div style="clear:both;"></div>
-                        <div data-type="prompt" class="alert alert-info fade in">
-                            <h4 class="col-md-11">Please put your url here to copy</h4>
-                            <a href="#" class="close col-md-1" title="close">×</a>
+                    <br/>
+                        <div class="prompt alert alert-info createPage hide">
+                            <h4>Create a page</h4>
+                            <h5>Paste content which is copied</h5>                            
+                            <form name="createPage">
+                                <div class="form-group">
+                                    <label for="EditPage"></label>
+                                    <textarea name="content" style="font-family:consolas; font-size:14px; color:green;" rows="12" class="form-control" id="EditPage"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input name="filename" type="text" class="form-control" placeholder="Filename"/>
+                                </div>
+                                
+                                <div class="checkbox">
+                                    <label>
+                                        <input value="cleanup" name="cleanup" type="checkbox" checked> Adjust automatically for Standalone environment
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <a class="btn btn-success" data-action="create">Create</a>                                    
+                                </div>
+                            </form>
+                                                
+                        </div>
+
+                        <div class="prompt alert alert-info freshPage hide">
+                            <h4>Extract a page</h4>
+                            <h5>Please put your url from where content will be copied</h5>                            
                             <form>
                                 <div class="form-group">
                                     <label for="WebURL"></label>
                                     <input type="text" class="form-control" id="WebURL" placeholder="Web URL">
                                 </div>
                                 <div class="form-group">
-                                    <p><span></span></p>
-                                    <a class="btn btn-info">Done</a>
+                                    <a class="btn btn-success" data-action="done">Done</a>
+                                    <a class="btn btn-default" data-action="close">Close</a>
                                 </div>
                             </form>                    
                         </div>
@@ -77,12 +112,7 @@
                 </div>
             <br/>
             </div>
-            <div data-progress="show">
-            <h4 class="text-warning" style="text-align:center;"></h4>
-            <div class="progress"> 
-                <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar"  aria-valuemin="0" aria-valuemax="100"><span class="sr-only">45% Complete</span></div> 
-            </div>
-            </div>
+
 
             <div>
                 <div class="list-group">
